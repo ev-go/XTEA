@@ -58,15 +58,16 @@ func crypt(testKey []byte, block []byte, rounds uint32) []byte {
 	buf[3] = binary.LittleEndian.Uint32(block[12:16])
 
 	sum = 0
+
 	a = buf[0] + key[0]
 	b = buf[1] + key[1]
 	c = buf[2] + key[2]
 	d = buf[3] + key[3]
+
 	for i := 0; i != int(rounds); i++ {
 		a = a + (((b << 4) + rol(key[(sum%4)+4], b)) ^ (d + sum) ^ ((b >> 5) + rol(key[sum%4], b>>27)))
 		sum = sum + 0x9E3779B9
 		c = c + (((d << 4) + rol(key[((sum>>11)%4)+4], d)) ^ (b + sum) ^ ((d >> 5) + rol(key[(sum>>11)%4], d>>27)))
-
 		t = a
 		a = b
 		b = c
@@ -78,6 +79,7 @@ func crypt(testKey []byte, block []byte, rounds uint32) []byte {
 	buf[1] = b ^ key[5]
 	buf[2] = c ^ key[6]
 	buf[3] = d ^ key[7]
+
 	end := make([]byte, 16)
 
 	binary.LittleEndian.PutUint32(end[:4], buf[0])
@@ -121,11 +123,8 @@ func decrypt(testKey []byte, block []byte, rounds uint32) []byte {
 		c = b
 		b = a
 		a = t
-
 		c = c - (((d << 4) + rol(key[((sum>>11)%4)+4], d)) ^ (b + sum) ^ ((d >> 5) + rol(key[(sum>>11)%4], d>>27)))
-
 		sum = sum - 0x9E3779B9
-
 		a = a - (((b << 4) + rol(key[(sum%4)+4], b)) ^ (d + sum) ^ ((b >> 5) + rol(key[sum%4], b>>27)))
 	}
 
