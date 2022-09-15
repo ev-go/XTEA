@@ -40,7 +40,7 @@ func rol(base uint32, shift uint32) uint32 {
 
 func crypt(testKey []byte, block []byte, rounds uint32) []byte {
 	var a, b, c, d, sum, t uint32
-	var buf [4]uint32 //Буфер нужен чтобы обойти баг с невыровнянным plain
+	var buf [4]uint32 //Буфер нужен чтобы обойти баг с невыровнянным block
 	var key [8]uint32
 
 	key[0] = binary.LittleEndian.Uint32(testKey[:4])
